@@ -1,4 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.ShadowExtension
+import org.junit.platform.gradle.plugin.EnginesExtension
+import org.junit.platform.gradle.plugin.JUnitPlatformExtension
 import java.util.concurrent.TimeUnit
 
 buildscript {
@@ -47,6 +49,12 @@ configure<ShadowExtension> {
 	version = null
 }
 
+configure<JUnitPlatformExtension> {
+	engines {
+		include("spek")
+	}
+}
+
 configurations.all {
 	it.resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
 }
@@ -57,6 +65,7 @@ val jacksonVersion = "2.8.4"
 val reactorVersion = "3.0.4.BUILD-SNAPSHOT"
 val junitPlatformVersion= extra["junitPlatformVersion"] as String
 val junitJupiterVersion = "5.0.0-M3"
+val spekVersion = "1.0.89"
 
 dependencies {
 	compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
@@ -82,6 +91,15 @@ dependencies {
 	testCompile("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
 	testCompile("org.junit.platform:junit-platform-runner:$junitPlatformVersion")
 	testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+	testCompile("org.jetbrains.spek:spek-api:$spekVersion")
+	testRuntime("org.jetbrains.spek:spek-junit-platform-engine:$spekVersion")
 }
 
+// extension for configuration
+fun JUnitPlatformExtension.engines(setup: EnginesExtension.() -> Unit) {
+	when (this) {
+		is ExtensionAware -> extensions.getByType(EnginesExtension::class.java).setup()
+		else -> throw Exception("${this::class} must be an insance of ExtensionAware")
+	}
+}
 
