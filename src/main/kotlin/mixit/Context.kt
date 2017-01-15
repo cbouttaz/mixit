@@ -3,10 +3,7 @@ package mixit
 import com.mongodb.ConnectionString
 import com.samskivert.mustache.Mustache
 import mixit.controller.*
-import mixit.repository.ArticleRepository
-import mixit.repository.EventRepository
-import mixit.repository.SessionRepository
-import mixit.repository.UserRepository
+import mixit.repository.*
 import mixit.support.ReactorNettyServer
 import mixit.support.addPropertySource
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
@@ -46,6 +43,7 @@ fun context(port: Int?, hostname: String) = AnnotationConfigApplicationContext {
         registerBean<UserRepository>()
         registerBean<EventRepository>()
         registerBean<SessionRepository>()
+        registerBean<SponsorRepository>()
         registerBean<ArticleRepository>()
 
         registerBean<ArticleController>()
@@ -54,4 +52,5 @@ fun context(port: Int?, hostname: String) = AnnotationConfigApplicationContext {
         registerBean<SessionController>()
         registerBean<NewsController>()
         registerBean<GlobalController>()
+        registerBean<SponsorController>()
 }
